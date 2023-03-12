@@ -3,9 +3,11 @@
 int GCD(int a, int b) {
   a = abs(a);
   b = abs(b);
+
   if (b == 0) {
     return a;
   }
+
   return GCD(b, a % b);
 }
 
@@ -13,6 +15,7 @@ void Rational::Reduce() {
   int gcd = GCD(p_, q_);
   p_ /= gcd;
   q_ /= gcd;
+
   if (q_ < 0) {
     this->p_ = -p_;
     this->q_ = -q_;
@@ -23,6 +26,7 @@ Rational::Rational(int p, int q) {
   if (q == 0) {
     throw RationalDivisionByZero();
   }
+
   this->p_ = p;
   this->q_ = q;
   Reduce();
@@ -72,6 +76,7 @@ Rational& Rational::operator/=(const Rational& other) {
   if (other.p_ == 0) {
     throw RationalDivisionByZero();
   }
+
   p_ = other.q_ * p_;
   q_ = other.p_ * q_;
   Reduce();
@@ -114,6 +119,7 @@ void Rational::SetNumerator(int value) {
 }
 
 void Rational::SetDenominator(int value) {
+
   if (value == 0) {
     throw RationalDivisionByZero();
   }
@@ -180,9 +186,11 @@ Rational operator-(const Rational& first, const Rational& other) {
 std::ostream& operator<<(std::ostream& stream, const Rational object) {
   if (object.GetDenominator() == 1) {
     stream << object.GetNumerator();
+
   } else {
     stream << object.GetNumerator() << "/" << object.GetDenominator();
   }
+
   return stream;
 }
 
@@ -191,38 +199,46 @@ std::istream& operator>>(std::istream& stream, Rational& object) {
   bool is_there_slash = false;
   stream >> pq;
   int i = 23;
+
   while (pq[i] == '\0') {
     --i;
   }
+
   int p = 0;
   int q = 0;
   int j = 1;
+
   while (i >= 0) {
-    if (pq[i] != '/' && pq[i] != '+' && pq[i] != '-' && !is_there_slash) {
-      q += (int(pq[i]) - 48) * j;
-      j *= 10;
-    }
-    if (pq[i] != '/' && pq[i] != '+' && pq[i] != '-' && is_there_slash) {
-      p += (int(pq[i]) - 48) * j;
-      j *= 10;
-    }
-    if (pq[i] == '-' && !is_there_slash) {
-      q *= -1;
-    }
-    if (pq[i] == '-' && is_there_slash) {
-      p *= -1;
-    }
-    if (pq[i] == '/') {
+
+    if (pq[i] != '/' && pq[i] != '+' && pq[i] != '-') {
+      if (is_there_slash) {
+        p += (int(pq[i]) - 48) * j;
+        j *= 10;
+      } else {
+        q += (int(pq[i]) - 48) * j;
+        j *= 10;
+      }
+    } else if (pq[i] == '-') {
+      if (is_there_slash) {
+        p *= -1;
+      } else {
+        q *= -1;
+      }
+    } else if (pq[i] == '/') {
       is_there_slash = true;
       j = 1;
     }
+
     if ((i == 0) && !is_there_slash) {
       p = q;
       q = 1;
     }
+
     --i;
   }
+
   object.SetNumerator(p);
   object.SetDenominator(q);
+
   return stream;
 }
