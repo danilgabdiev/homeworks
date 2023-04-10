@@ -44,11 +44,11 @@ Rational::Rational() : p_(0), q_(1) {
 }
 
 Rational Rational::operator-() const {
-  return {-p_, q_};
+  return { -p_, q_ };
 }
 
 Rational Rational::operator+() const {
-  return {p_, q_};
+  return { p_, q_ };
 }
 
 Rational& Rational::operator+=(const Rational& other) {
@@ -90,7 +90,7 @@ Rational& Rational::operator++() {
 
 Rational Rational::operator++(int) {
   Rational copy = *this;
-  ++*this;
+  ++* this;
   return copy;
 }
 
@@ -101,7 +101,7 @@ Rational& Rational::operator--() {
 
 Rational Rational::operator--(int) {
   Rational copy = *this;
-  --*this;
+  --* this;
   return copy;
 }
 
@@ -119,10 +119,10 @@ void Rational::SetNumerator(int value) {
 }
 
 void Rational::SetDenominator(int value) {
-
   if (value == 0) {
     throw RationalDivisionByZero();
   }
+
   q_ = value;
   Reduce();
 }
@@ -186,7 +186,6 @@ Rational operator-(const Rational& first, const Rational& other) {
 std::ostream& operator<<(std::ostream& stream, const Rational object) {
   if (object.GetDenominator() == 1) {
     stream << object.GetNumerator();
-
   } else {
     stream << object.GetNumerator() << "/" << object.GetDenominator();
   }
@@ -195,7 +194,7 @@ std::ostream& operator<<(std::ostream& stream, const Rational object) {
 }
 
 std::istream& operator>>(std::istream& stream, Rational& object) {
-  char pq[24]{'\0'};
+  char pq[24]{ '\0' };
   bool is_there_slash = false;
   stream >> pq;
   int i = 23;
@@ -213,11 +212,11 @@ std::istream& operator>>(std::istream& stream, Rational& object) {
     if (pq[i] != '/' && pq[i] != '+' && pq[i] != '-') {
       if (is_there_slash) {
         p += (int(pq[i]) - 48) * j;
-        j *= 10;
-      } else {
+      }  else {
         q += (int(pq[i]) - 48) * j;
-        j *= 10;
       }
+
+      j *= 10;
     } else if (pq[i] == '-') {
       if (is_there_slash) {
         p *= -1;
