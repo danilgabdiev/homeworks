@@ -18,28 +18,32 @@ int Strncmp(const char* first, const char* second, size_t count) {
   second_len = (second_len < count ? second_len : count);
 
   size_t i = 0, j = 0;
-
+  int res = -2;
   while (i < first_len && j < second_len) {
     if (first[i] < second[j]) {
-      return -1;
+      res = -1;
+      break;
     }
 
     if (first[i] > second[j]) {
-      return 1;
+      res = 1;
+      break;
     }
 
     ++i, ++j;
   }
 
-  if (first_len == second_len) {
-    return 0;
+  if (res == -2) {
+    if (first_len == second_len) {
+      res = 0;
+    }
+
+    if (first_len > second_len) {
+      res = 1;
+    }
   }
 
-  if (first_len > second_len) {
-    return 1;
-  }
-
-  return -1;
+  return res;
 }
 
 int Strcmp(const char* first, const char* second) {
@@ -96,39 +100,37 @@ char* Strncat(char* dest, const char* src, size_t count) {
 const char* Strchr(const char* str, char symbol) {
   size_t str_len = Strlen(str);
 
-  size_t i = 0;
-  while (i < str_len) {
+  const char* res = nullptr;
+  for (size_t i = 0; i < str_len; ++i) {
     if (str[i] == symbol) {
-      return &(str[i]);
+      res = &(str[i]);
+      break;
     }
-
-    ++i;
   }
 
   if (symbol == '\0') {
-    return &(str[str_len]);
+    res = &(str[str_len]);
   }
 
-  return nullptr;
+  return res;
 }
 
 const char* Strrchr(const char* str, char symbol) {
   size_t str_len = Strlen(str);
 
-  size_t i = str_len;
-  while (i > 0) {
+  const char* res = nullptr;
+  for (size_t i = str_len; i > 0; --i) {
     if (str[i] == symbol) {
-      return &(str[i]);
+      res = &(str[i]);
+      break;
     }
-
-    --i;
   }
 
-  if (str[i] == symbol) {
-    return &(str[i]);
+  if (str[0] == symbol) {
+    res = &(str[0]);
   }
 
-  return nullptr;
+  return res;
 }
 
 size_t StrCounter(const char* dest, const char* src, bool is_strspn) {
@@ -173,10 +175,10 @@ const char* Strpbrk(const char* dest, const char* breakset) {
   size_t j = 0;
   while (dest[i] != '\0') {
     while (breakset[j] != '\0') {
-
       if (dest[i] == breakset[j]) {
         return &(dest[i]);
       }
+
       ++j;
     }
 
